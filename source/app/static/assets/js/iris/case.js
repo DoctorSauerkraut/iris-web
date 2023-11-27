@@ -187,6 +187,11 @@ function do_deletion_prompt(message) {
 }
 
 $(document).ready(function(){
+    data = {"edit":false}
+    post_request_api('/case/qualif/get', JSON.stringify(data), true).done((data) => {
+        $("#targetDivqualif").html(data.data);
+    });
+
     $(function(){
         var current = location.pathname;
         $('#h_nav_tab li').each(function(){

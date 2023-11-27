@@ -38,6 +38,7 @@ from app import app
 from app import db
 from app import socket_io
 from app.blueprints.case.case_assets_routes import case_assets_blueprint
+from app.blueprints.case.case_qualif_routes import case_qualif_blueprint
 from app.blueprints.case.case_graphs_routes import case_graph_blueprint
 from app.blueprints.case.case_ioc_routes import case_ioc_blueprint
 from app.blueprints.case.case_notes_routes import case_notes_blueprint
@@ -76,6 +77,7 @@ from app.util import response_success
 app.register_blueprint(case_timeline_blueprint)
 app.register_blueprint(case_notes_blueprint)
 app.register_blueprint(case_assets_blueprint)
+app.register_blueprint(case_qualif_blueprint)
 app.register_blueprint(case_ioc_blueprint)
 app.register_blueprint(case_rfiles_blueprint)
 app.register_blueprint(case_graph_blueprint)
@@ -114,7 +116,7 @@ def case_r(caseid, url_redir):
 
     desc_crc32, desc = case_get_desc_crc(caseid)
 
-    return render_template('case.html', case=case, desc=desc, crc=desc_crc32,
+    return render_template('case_qualif.html', case=case, desc=desc, crc=desc_crc32,
                            reports=reports, reports_act=reports_act, form=form)
 
 

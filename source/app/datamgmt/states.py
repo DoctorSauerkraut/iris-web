@@ -112,14 +112,17 @@ def get_ioc_state(caseid):
 def update_assets_state(caseid, userid=None):
     return update_object_state('assets', caseid=caseid, userid=userid)
 
+def get_qualif_state(caseid, userid=None):
+    return get_object_state('qualif', caseid=caseid, userid=userid)
+
+def update_qualif_state(caseid, userid=None):
+    return update_object_state('qualif', caseid=caseid, userid=userid)
 
 def get_assets_state(caseid):
     return get_object_state('assets', caseid=caseid)
 
-
 def update_notes_state(caseid, userid=None):
     return update_object_state('notes', caseid=caseid, userid=userid)
-
 
 def get_notes_state(caseid):
     return get_object_state('notes', caseid=caseid)

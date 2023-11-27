@@ -1,0 +1,45 @@
+<ul class="form_qualif">
+    <li><b>Description générale du SI</b>
+        <ul>
+            <li><input type="checkbox" id="arch_nb_postes"/>Nombre de postes</li>
+            <li><input type="checkbox" id="arch_nb_srv_ph"/>Nombre de serveurs physiques</li>
+            <li><input type="checkbox" id="arch_nb_srv_vrt"/>Nombre de serveurs virtuels</li>
+            <li><input type="checkbox" id="arch_pol_maj"/>Politiques de MAJ/patching</li>
+            <li><input type="checkbox" id="arch_svc_crit"/>Services critiques</li>
+            <li><input type="checkbox" id="arch_svc_file"/>Services filers</li>
+            <li><input type="checkbox" id="arch_gpo_lst"/>GPO</li>
+            <li><input type="checkbox" id="arch_mtn_tool"/>Outils de maintenance : TeamViewer, VNC, ...</li>
+        </ul><ul><b>Sauvegardes</b>
+            <li><input type="checkbox" id="arch_save_tool"/>Outils</li>
+            <li><input type="checkbox" id="arch_save_line"/>A chaud</li>
+            <li><input type="checkbox" id="arch_save_cold"/>A froid</li>
+            <li><input type="checkbox" id="arch_save_date"/>Date des dernières sauvegardes</li>
+        </ul><ul><b>Outils de sécurité</b>
+            <li>Gestion et politique MDP, MFA
+                <ul>
+                    <li><input type="checkbox" id="arch_pol_prus"/>Utilisateurs à privilèges</li>
+                    <li><input type="checkbox" id="arch_pol_stus"/>Utilisateurs standard</li>
+                </ul>
+            </li>
+            <li><input type="checkbox" id="arch_secu_tool"/>Outils : AV, EDR, ...</li>
+            <li><input type="checkbox" id="arch_secu_fwl"/>Firewall</li>
+            <li><input type="checkbox" id="arch_secu_prox"/>Proxys</li>
+        </ul><ul><b>AD</b>
+            <li><input type="checkbox" id="arch_ad_dom"/>Domaines et forêts</li>
+            <li><input type="checkbox" id="arch_ad_apru"/>Relations d'approbation</li>
+            <li><input type="checkbox" id="arch_ad_had"/>Services hors AD</li>
+            <li><input type="checkbox" id="arch_ad_azu"/>ADConnect et architecture Azure</li>
+        </ul><ul><b>Exposition</b>
+            <li><input type="checkbox" id="arch_expo_entr"/>Points d'entrée</li>
+            <li><input type="checkbox" id="arch_expo_web"/>Citrix, outils, applications web</li>
+            <li><input type="checkbox" id="arch_expo_prot"/>Protocoles : RDP, SSH, VPN, ...</li>
+            <li><input type="checkbox" id="arch_expo_intr"/>Flux inter-établissements</li>
+            <li><input type="checkbox" id="arch_expo_ippu"/>IP publiques de la structure</li>
+        </ul><ul><b>Mails</b>
+            <li><input type="checkbox" id="arch_mail_clou"/>Cloud/On-Prem</li>
+            <li><input type="checkbox" id="arch_mail_tech"/>Technologie</li>
+            <li><input type="checkbox" id="arch_mail_rule"/>Règles</li>
+            <li><input type="checkbox" id="arch_mail_shbo"/>Boîtes partagées</li>
+        </ul>
+    </li>
+</ul>

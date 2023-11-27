@@ -3,9 +3,9 @@
                             <div class="row">
                                 <div class="col col-md-ml-12 col-sm-12">
                                     <ul class="nav navbar-nav page-navigation page-navigation-style-2 page-navigation-secondary" id="h_nav_tab">
-                                        <li class="nav-item {{ active if page == 'case' }}">
-                                            <a class="nav-link" href="/case?cid={{session['current_case'].case_id}}">
-                                                <span class="menu-title">Summary</span>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/case/qualif?cid={{session['current_case'].case_id}}">
+                                                <span class="menu-title">Qualification</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
@@ -17,7 +17,7 @@
                                             <a class="nav-link" href="/case/assets?cid={{session['current_case'].case_id}}">
                                                 <span class="menu-title">Assets</span>
                                             </a>
-                                        </li>
+                                        </li> 
                                         <li class="nav-item">
                                             <a class="nav-link" href="/case/ioc?cid={{session['current_case'].case_id}}">
                                                 <span class="menu-title">IOC</span>

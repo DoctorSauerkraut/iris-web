@@ -291,6 +291,13 @@ class ReportType(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.Text(), unique=True)
 
+class CaseQualifDetails(db.Model):
+    __tablename__ = 'case_qualif_detail'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    caseid = db.Column(db.Integer())
+    qualifinfo = db.Column(db.String())
+    checklist_info = db.Column(db.String())
 
 class CaseTemplateReport(db.Model):
     __tablename__ = 'case_template_report'

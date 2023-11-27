@@ -72,6 +72,19 @@
                             <div class="card-header">
                                 <div class="row">
                                     {{ form.hidden_tag() }}
+                                    <a href="#case_qualif_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_qualif_card">
+                                        <h4 class="m-0 font-weight-bold">Case qualification details {{ "(Syncing with DB )" if case.id }}</h4>
+                                    </a>
+                                </div>
+                                <div class="col-md-6" id="ctrd_casequalif">
+                                    <div id="targetDivqualif"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4" id="rescard1">
+                            <div class="card-header">
+                                <div class="row">
+                                    {{ form.hidden_tag() }}
                                     <a href="#case_summary_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_summary_card">
                                         <h4 class="m-0 font-weight-bold">Case summary {{ "(Syncing with DB )" if case.id }}</h4>
                                     </a>

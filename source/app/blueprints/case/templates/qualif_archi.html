@@ -1,0 +1,17 @@
+<h1>Architecture</h1>
+{% if edit %}
+<p></p>
+{% if data["edr"] %}
+<input type="checkbox" id="qualif_archi_edr" checked/>EDR
+{% else %}
+<input type="checkbox" id="qualif_archi_edr" />EDR
+{%endif %}
+<br /><input type="checkbox" id="antivirus"/>Anti-virus:<input type="text" id="antivirus_details" />
+</p>
+{% else %}
+    {% if data["edr"] %}
+    <p>Edr:Oui</p>
+    {% else %}
+    <p>EDR: Non</p>
+    {% endif %}
+{% endif %}

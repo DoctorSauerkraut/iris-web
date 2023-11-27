@@ -1,0 +1,236 @@
+{% extends "layouts/default_ext.html" %} {% block title %} Case Assets {% endblock title %} {% block stylesheets %}
+{% include 'includes/header_case.html' %}
+<link rel="stylesheet" href="/static/assets/css/bootstrap-select.min.css">
+{% endblock stylesheets %}
+{% block content %}
+{% include 'includes/navigation_ext.html' %}
+
+{% include 'includes/sidenav.html' %}
+<div class="main-panel">
+
+    <div class="content">
+        {% if current_user.is_authenticated %}
+        {{ form.hidden_tag() }}
+        <div class="panel-header bg-info-gradient">
+                <div class="page-inner py-5">
+                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row mt--3">
+                        <div class="col">
+                            <div class="row">
+                                <h2 class="text-white pb-2 fw-bold case-name"> <i class="icon-big flaticon-network mr-2"></i> {{ case.name|unquote }}
+                                </h2>
+                            </div>
+                            <h5 class="text-white op-7 mb-3">Opened on {{ case.open_date }} by {{ case.user.name }}.</h5>
+                            {% if case.close_date %}
+                            <h5 class="text-warning  mb-3">Closed on {{ case.close_date }}</h5>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                 <select title="Case outcome" class="float-right btn btn-rounded badge-pill hidden-caret btn-sm ml-auto mb-2 {% if case.status_id == 1 %}badge-success{% elif case.status_id == 2 %}badge-danger{% else %}btn-outline-light{% endif %}"
+                                          id="case_quick_status" aria-labelledby="dropdownMenuButton">
+                                      <option value="0" {% if case.status_id == 0 %}selected{% endif %} class="badge-text">Unknown outcome</option>
+                                      <option value="1" {% if case.status_id == 1 %}selected{% endif %} class="badge-text">False Positive</option>
+                                      <option value="2" {% if case.status_id == 2 %}selected{% endif %} class="badge-text">True Positive</option>
+                                      <option value="3" {% if case.status_id == 3 %}selected{% endif %} class="badge-text">Not applicable</option>
+                                  </select>
+                            </div>
+                            <div class="row">
+                                  <div class=" ml-auto">
+                                    <h5 class="text-white op-7 mb-2 float-right"><b>Customer</b> : {{ case.client.name }}</h5>
+                                    <h5 class="text-white op-7 mb-2 "><b>SOC ID :</b> {{ case.soc_id }}</h5>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2 mb--2">
+
+                        <div class="col">
+                            {% if case.case_tags %}
+                            {% for tag in case.case_tags %}
+                            <span class="badge badge-pill badge-light ml-1 pull-right"><i class="fa fa-tag mr-1"></i> {{ tag }}</span>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-card-no-pd">
+                <div class="col-md-12">
+                    <div class="card-mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                {{ form.hidden_tag() }}
+                                <a href="#case_summary_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_summary_card">
+                                    <h4 class="m-0 font-weight-bold">Qualification details {{ "(Syncing with DB )" if case.id }}</h4>
+                                </a>
+                                <div class="mr-0 float-right">
+                                    <small id="content_typing" class="mr-3 mt-1"></small>
+                                    <small id="content_last_saved_by" class="mr-3 mt-1"></small>
+                                    <span id="last_saved" class="badge mr-3 ml-2"></span>
+                                    <small id="content_last_sync"></small>
+                                    <a type="button"
+                                        class="btn btn-sm btn-outline-default mr-2 ml-3"
+                                        id="exportbtn"
+                                        onclick="export_checklist(this)">
+                                        Export Checklist
+                                    </a>
+                                    <button id="editbtn" class="btn btn-sm mr-3"
+                                        onclick="edit_qualif_summaries();">
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a href="#case_qualif_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_qualif_card">
+                        <h4 class="m-0 font-weight-bold">Organisation {{ "(Syncing with DB )" if case.id }}</h4>
+                    </a>
+                    {% include 'qualif/case_qualif_checklist_orga.html' %}
+                </div>
+                <div class="col-md-8">
+                    <div class="row mb-1">
+                        <div class="col" id="container_editor_qualif_orga_edition_btn" style="display:none;">
+                                <div class="btn btn-sm btn-light mr-1 " title="CTRL-B" onclick="editor_orga.insertSnippet('**${1:$SELECTION}**');editor_orga.focus();"><i class="fa-solid fa-bold"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-I" onclick="editor_orga.insertSnippet('*${1:$SELECTION}*');editor_orga.focus();"><i class="fa-solid fa-italic"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-1" onclick="editor_orga.insertSnippet('# ${1:$SELECTION}');editor_orga.focus();">H1</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-2" onclick="editor_orga.insertSnippet('## ${1:$SELECTION}');editor_orga.focus();">H2</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-3" onclick="editor_orga.insertSnippet('### ${1:$SELECTION}');editor_orga.focus();">H3</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-4" onclick="editor_orga.insertSnippet('#### ${1:$SELECTION}');editor_orga.focus();">H4</div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert code" onclick="editor_orga.insertSnippet('```${1:$SELECTION}```');editor_orga.focus();"><i class="fa-solid fa-code"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert link" onclick="editor_orga.insertSnippet('[New link](${1:$SELECTION})');editor_orga.focus();"><i class="fa-solid fa-link"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert table" onclick="editor_orga.insertSnippet('|\t|\t|\t|\n|--|--|--|\n|\t|\t|\t|\n|\t|\t|\t|');editor_orga.focus();"><i class="fa-solid fa-table"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert bullet list" onclick="editor_orga.insertSnippet('\n- \n- \n- ');editor_orga.focus();"><i class="fa-solid fa-list"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert numbered list" onclick="editor_orga.insertSnippet('\n1. a  \n2. b  \n3. c  ');editor_orga.focus();"><i class="fa-solid fa-list-ol"></i></div>
+                        </div>
+                    </div>
+                    <div id="container_editor_qualif_orga" style="display:none;">
+                        <div style="display: none" id="fetched_crc"></div>
+                        <div id="editor_qualif_orga" data-theme="{% if current_user.in_dark_mode %}dark{% else %}light{% endif %}"></div>
+                        <textarea id="case_qualif_orga" rows="10" cols="82" style="display: none"></textarea>
+                    </div>
+                    <div id="targetDiv_orga"></div>
+                </div>
+            </div>
+            <div class="row row-card-no-pd">
+                <div class="col-md-4">
+                    <a href="#case_qualif_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_qualif_card">
+                        <h4 class="m-0 font-weight-bold">Description de l'incident {{ "(Syncing with DB )" if case.id }}</h4>
+                    </a>
+                    {% include 'qualif/case_qualif_checklist_desc.html' %}
+                </div>
+                <div class="col-md-8">
+                    <div class="row mb-1">
+                        <div class="col" id="container_editor_qualif_desc_edition_btn" style="display:none;">
+                                <div class="btn btn-sm btn-light mr-1 " title="CTRL-B" onclick="editor_desc.insertSnippet('**${1:$SELECTION}**');editor_desc.focus();"><i class="fa-solid fa-bold"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-I" onclick="editor_desc.insertSnippet('*${1:$SELECTION}*');editor_desc.focus();"><i class="fa-solid fa-italic"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-1" onclick="editor_desc.insertSnippet('# ${1:$SELECTION}');editor_desc.focus();">H1</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-2" onclick="editor_desc.insertSnippet('## ${1:$SELECTION}');editor_desc.focus();">H2</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-3" onclick="editor_desc.insertSnippet('### ${1:$SELECTION}');editor_desc.focus();">H3</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-4" onclick="editor_desc.insertSnippet('#### ${1:$SELECTION}');editor_desc.focus();">H4</div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert code" onclick="editor_desc.insertSnippet('```${1:$SELECTION}```');editor_desc.focus();"><i class="fa-solid fa-code"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert link" onclick="editor_desc.insertSnippet('[New link](${1:$SELECTION})');editor_desc.focus();"><i class="fa-solid fa-link"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert table" onclick="editor_desc.insertSnippet('|\t|\t|\t|\n|--|--|--|\n|\t|\t|\t|\n|\t|\t|\t|');editor_desc.focus();"><i class="fa-solid fa-table"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert bullet list" onclick="editor_desc.insertSnippet('\n- \n- \n- ');editor_desc.focus();"><i class="fa-solid fa-list"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert numbered list" onclick="editor_desc.insertSnippet('\n1. a  \n2. b  \n3. c  ');editor_desc.focus();"><i class="fa-solid fa-list-ol"></i></div>
+                        </div>
+                    </div>
+                    <div id="container_editor_qualif_desc" style="display:none;">
+                        <div style="display: none" id="fetched_crc"></div>
+                        <div id="editor_qualif_desc" data-theme="{% if current_user.in_dark_mode %}dark{% else %}light{% endif %}"></div>
+                        <textarea id="case_qualif_desc" rows="10" cols="82" style="display: none"></textarea>
+                    </div>
+                    <div id="targetDiv_desc"></div>
+                </div>
+            </div>
+            <div class="row row-card-no-pd">
+                <div class="col-md-4">
+                    <a href="#case_qualif_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_qualif_card">
+                        <h4 class="m-0 font-weight-bold">Procédure {{ "(Syncing with DB )" if case.id }}</h4>
+                    </a>
+                    {% include 'qualif/case_qualif_checklist_proc.html' %}
+                </div>
+                <div class="col-md-8">
+                    <div class="row mb-1">
+                        <div class="col" id="container_editor_qualif_proc_edition_btn" style="display:none;">
+                                <div class="btn btn-sm btn-light mr-1 " title="CTRL-B" onclick="editor_proc.insertSnippet('**${1:$SELECTION}**');editor_proc.focus();"><i class="fa-solid fa-bold"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-I" onclick="editor_proc.insertSnippet('*${1:$SELECTION}*');editor_proc.focus();"><i class="fa-solid fa-italic"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-1" onclick="editor_proc.insertSnippet('# ${1:$SELECTION}');editor_proc.focus();">H1</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-2" onclick="editor_proc.insertSnippet('## ${1:$SELECTION}');editor_proc.focus();">H2</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-3" onclick="editor_proc.insertSnippet('### ${1:$SELECTION}');editor_proc.focus();">H3</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-4" onclick="editor_proc.insertSnippet('#### ${1:$SELECTION}');editor_proc.focus();">H4</div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert code" onclick="editor_proc.insertSnippet('```${1:$SELECTION}```');editor_proc.focus();"><i class="fa-solid fa-code"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert link" onclick="editor_proc.insertSnippet('[New link](${1:$SELECTION})');editor_proc.focus();"><i class="fa-solid fa-link"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert table" onclick="editor_proc.insertSnippet('|\t|\t|\t|\n|--|--|--|\n|\t|\t|\t|\n|\t|\t|\t|');editor_proc.focus();"><i class="fa-solid fa-table"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert bullet list" onclick="editor_proc.insertSnippet('\n- \n- \n- ');editor_proc.focus();"><i class="fa-solid fa-list"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert numbered list" onclick="editor_proc.insertSnippet('\n1. a  \n2. b  \n3. c  ');editor_proc.focus();"><i class="fa-solid fa-list-ol"></i></div>
+                        </div>
+                    </div>
+                    <div id="container_editor_qualif_proc" style="display:none;">
+                        <div style="display: none" id="fetched_crc"></div>
+                        <div id="editor_qualif_proc" data-theme="{% if current_user.in_dark_mode %}dark{% else %}light{% endif %}"></div>
+                        <textarea id="case_qualif_proc" rows="10" cols="82" style="display: none"></textarea>
+                    </div>
+                    <div id="targetDiv_proc"></div>
+                </div>
+            </div>
+            <div class="row row-card-no-pd">
+                <div class="col-md-4">
+                    <a href="#case_qualif_card" class="d-block nav-link mr-auto" data-toggle="collapse" aria-expanded="true" aria-controls="case_qualif_card">
+                        <h4 class="m-0 font-weight-bold">Architecture {{ "(Syncing with DB )" if case.id }}</h4>
+                    </a>
+                    {% include 'qualif/case_qualif_checklist_arch.html' %}
+                </div>
+                <div class="col-md-8">
+                    <div class="row mb-1">
+                        <div class="col" id="container_editor_qualif_arch_edition_btn" style="display:none;">
+                                <div class="btn btn-sm btn-light mr-1 " title="CTRL-B" onclick="editor_arch.insertSnippet('**${1:$SELECTION}**');editor_arch.focus();"><i class="fa-solid fa-bold"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-I" onclick="editor_arch.insertSnippet('*${1:$SELECTION}*');editor_arch.focus();"><i class="fa-solid fa-italic"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-1" onclick="editor_arch.insertSnippet('# ${1:$SELECTION}');editor_arch.focus();">H1</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-2" onclick="editor_arch.insertSnippet('## ${1:$SELECTION}');editor_arch.focus();">H2</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-3" onclick="editor_arch.insertSnippet('### ${1:$SELECTION}');editor_arch.focus();">H3</div>
+                                <div class="btn btn-sm btn-light mr-1" title="CTRL-SHIFT-4" onclick="editor_arch.insertSnippet('#### ${1:$SELECTION}');editor_arch.focus();">H4</div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert code" onclick="editor_arch.insertSnippet('```${1:$SELECTION}```');editor_arch.focus();"><i class="fa-solid fa-code"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert link" onclick="editor_arch.insertSnippet('[New link](${1:$SELECTION})');editor_arch.focus();"><i class="fa-solid fa-link"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert table" onclick="editor_arch.insertSnippet('|\t|\t|\t|\n|--|--|--|\n|\t|\t|\t|\n|\t|\t|\t|');editor_arch.focus();"><i class="fa-solid fa-table"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert bullet list" onclick="editor_arch.insertSnippet('\n- \n- \n- ');editor_arch.focus();"><i class="fa-solid fa-list"></i></div>
+                                <div class="btn btn-sm btn-light mr-1" title="Insert numbered list" onclick="editor_arch.insertSnippet('\n1. a  \n2. b  \n3. c  ');editor_arch.focus();"><i class="fa-solid fa-list-ol"></i></div>
+                        </div>
+                    </div>
+                    <div id="container_editor_qualif_arch" style="display:none;">
+                        <div style="display: none" id="fetched_crc"></div>
+                        <div id="editor_qualif_arch" data-theme="{% if current_user.in_dark_mode %}dark{% else %}light{% endif %}"></div>
+                        <textarea id="case_qualif_arch" rows="10" cols="82" style="display: none"></textarea>
+                    </div>
+                    <div id="targetDiv_arch"></div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% include 'includes/footer.html' %}
+
+</div>
+{% endblock content %}
+{% block javascripts %}
+{% include 'includes/footer_case.html' %}
+<script src="/static/assets/js/plugin/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/assets/js/plugin/ace/src-noconflict/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/assets/js/core/socket.io.js"></script>
+<script src="/static/assets/js/plugin/select/select2.js"></script>
+
+<script src="/static/assets/js/plugin/showdown/showdown.min.js"></script>
+<script src="/static/assets/js/iris/crc32.js"></script>
+<script src="/static/assets/js/iris/datatablesUtils.js"></script>
+<script src="/static/assets/js/iris/case.js"></script>
+<script src="/static/assets/js/iris/manage.cases.common.js"></script>
+<script src="/static/assets/js/iris/case.qualif.js"></script>
+<script src="/static/assets/js/plugin/select/bootstrap-select.min.js"></script>
+<script src="/static/assets/js/plugin/select/bootstrap-multiselect.min.js"></script>
+
+<script src="/static/assets/js/plugin/sortable/sortable.js "></script>
+<script src="/static/assets/js/iris/case.asset.js"></script>
+
+
+{% endblock javascripts %}
